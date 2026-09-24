@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Registration & Result Portal - Bootstrap</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body{ background:#f4f6f9; }
+  .navbar-brand{ font-weight:600; }
+  .card{ border:none; box-shadow:0 2px 10px rgba(0,0,0,.08); }
+  .card-header{ background:#0d3b66; color:#fff; font-weight:600; }
+  .badge-grade{ font-size:1.4rem; padding:.5rem 1rem; }
+  #resultSection{ display:none; }
+  .table thead th{ background:#e9ecef; }
+  .status-pass{ color:#198754; font-weight:700; }
+  .status-fail{ color:#dc3545; font-weight:700; }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark mb-4">
+  <div class="container">
+    <span class="navbar-brand mb-0 h1">🎓 Student Registration & Result Portal</span>
+  </div>
+</nav>
+
+<div class="container mb-5">
+
+  <div class="card mb-4">
+    <div class="card-header">Registration Form</div>
+    <div class="card-body">
+      <form id="regForm" class="row g-3" novalidate>
+
+        <div class="col-md-6">
+          <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="name" required pattern="[A-Za-z .]{3,50}"
+                 placeholder="e.g. Ananya Raghavan">
+          <div class="invalid-feedback">Enter a valid name (3–50 letters).</div>
+        </div>
+
+        <div class="col-md-6">
+          <label for="rollno" class="form-label">Roll Number <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="rollno" required pattern="[A-Za-z0-9]{4,12}"
+                 placeholder="e.g. 22AIML045">
+          <div class="invalid-feedback">Enter a valid roll number.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" id="dob" required>
+          <div class="invalid-feedback">Please select your date of birth.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+          <input type="email" class="form-control" id="email" required placeholder="you@example.com">
+          <div class="invalid-feedback">Enter a valid email address.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+          <input type="tel" class="form-control" id="phone" required pattern="[6-9][0-9]{9}" maxlength="10"
+                 placeholder="10-digit mobile number">
+          <div class="invalid-feedback">Enter a valid 10-digit phone number.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label for="course" class="form-label">Select Course <span class="text-danger">*</span></label>
+          <select class="form-select" id="course" required>
+            <option value="" selected disabled>Choose a course</option>
+            <option>B.Tech - Artificial Intelligence & Machine Learning</option>
+            <option>B.Tech - Computer Science & Engineering</option>
+            <option>B.Tech - Information Technology</option>
+            <option>B.Tech - Electronics & Communication</option>
+          </select>
+          <div class="invalid-feedback">Please select a course.</div>
+        </div>
+
+        <div class="col-12"><hr></div>
+        <h5 class="text-primary">Marks (out of 100)</h5>
+
+        <div class="col-md-4">
+          <label for="m1" class="form-label">Deep Learning</label>
+          <input type="number" class="form-control" id="m1" min="0" max="100" required>
+        </div>
+        <div class="col-md-4">
+          <label for="m2" class="form-label">Machine Learning</label>
+          <input type="number" class="form-control" id="m2" min="0" max="100" required>
+        </div>
+        <div class="col-md-4">
+          <label for="m3" class="form-label">Data Structures</label>
+          <input type="number" class="form-control" id="m3" min="0" max="100" required>
+        </div>
+        <div class="col-md-4">
+          <label for="m4" class="form-label">Mathematics for AI</label>
+          <input type="number" class="form-control" id="m4" min="0" max="100" required>
+        </div>
+        <div class="col-md-4">
+          <label for="m5" class="form-label">Web Technologies</label>
+          <input type="number" class="form-control" id="m5" min="0" max="100" required>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end gap-2 mt-4">
+          <button type="reset" class="btn btn-outline-secondary">Clear Form</button>
+          <button type="submit" class="btn btn-primary">Submit & View Result</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="card" id="resultSection">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span>Result Sheet</span>
+      <span class="badge bg-warning text-dark badge-grade" id="outGrade">—</span>
+    </div>
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-4"><strong>Name:</strong> <span id="outName"></span></div>
+        <div class="col-md-4"><strong>Roll No:</strong> <span id="outRoll"></span></div>
+        <div class="col-md-4"><strong>Course:</strong> <span id="outCourse"></span></div>
+      </div>
+
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr><th>Subject</th><th class="text-end">Marks</th><th>Status</th></tr>
+        </thead>
+        <tbody id="outRows"></tbody>
+        <tfoot>
+          <tr class="table-light fw-bold">
+            <td>Total / Percentage</td>
+            <td class="text-end" id="outTotal"></td>
+            <td id="outResult"></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="alert alert-info mb-0" id="outNote"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+  const form = document.getElementById('regForm');
+  const resultSection = document.getElementById('resultSection');
+  const subjects = [
+    ['Deep Learning','m1'],
+    ['Machine Learning','m2'],
+    ['Data Structures','m3'],
+    ['Mathematics for AI','m4'],
+    ['Web Technologies','m5']
+  ];
+
+  function gradeFor(pct){
+    if(pct>=90) return 'O';
+    if(pct>=80) return 'A+';
+    if(pct>=70) return 'A';
+    if(pct>=60) return 'B';
+    if(pct>=50) return 'C';
+    if(pct>=40) return 'D';
+    return 'F';
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    if(!form.checkValidity()){
+      form.classList.add('was-validated');
+      return;
+    }
+    form.classList.remove('was-validated');
+
+    document.getElementById('outName').textContent = document.getElementById('name').value;
+    document.getElementById('outRoll').textContent = document.getElementById('rollno').value;
+    document.getElementById('outCourse').textContent = document.getElementById('course').value;
+
+    let total = 0, failCount = 0;
+    const rows = document.getElementById('outRows');
+    rows.innerHTML = '';
+
+    subjects.forEach(([label, id])=>{
+      const mark = Number(document.getElementById(id).value);
+      total += mark;
+      const pass = mark >= 40;
+      if(!pass) failCount++;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${label}</td>
+        <td class="text-end">${mark}</td>
+        <td class="${pass ? 'status-pass' : 'status-fail'}">${pass ? 'Pass' : 'Fail'}</td>`;
+      rows.appendChild(tr);
+    });
+
+    const pct = (total / (subjects.length * 100)) * 100;
+    const grade = gradeFor(pct);
+    const overallPass = failCount === 0;
+
+    document.getElementById('outTotal').textContent = `${total} / ${subjects.length * 100} (${pct.toFixed(1)}%)`;
+    document.getElementById('outResult').innerHTML = overallPass
+      ? '<span class="status-pass">PASS</span>'
+      : '<span class="status-fail">FAIL</span>';
+    document.getElementById('outGrade').textContent = grade;
+
+    document.getElementById('outNote').textContent = overallPass
+      ? `Result declared successfully. Overall grade: ${grade}.`
+      : `Result withheld — ${failCount} subject(s) below the passing mark of 40.`;
+
+    resultSection.style.display = 'block';
+    resultSection.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  form.addEventListener('reset', function(){
+    resultSection.style.display = 'none';
+    form.classList.remove('was-validated');
+  });
+</script>
+
+</body>
+</html>
